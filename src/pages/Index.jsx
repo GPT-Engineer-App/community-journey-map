@@ -94,9 +94,9 @@ const Index = () => {
             <motion.div
               className={`${
                 isMobile
-                  ? 'fixed inset-x-0 bottom-0'
-                  : 'w-1/2'
-              } bg-white md:rounded-none shadow-lg md:shadow-none`}
+                  ? 'fixed inset-x-0 bottom-0 h-auto'
+                  : 'w-1/2 h-full'
+              } bg-white md:rounded-none shadow-lg md:shadow-none overflow-y-auto`}
               initial={isMobile ? { y: "100%" } : { x: "100%" }}
               animate={isMobile ? { y: 0 } : { x: 0 }}
               exit={isMobile ? { y: "100%" } : { x: "100%" }}
