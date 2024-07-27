@@ -205,21 +205,6 @@ const CommunityProfile = ({ data }) => {
       ),
     },
     {
-      title: "Membership Duration vs. Retention Score",
-      chart: (
-        <ResponsiveContainer width="100%" height={300}>
-          <BarChart data={chartData}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            <Bar dataKey="value" fill="#8884d8" />
-          </BarChart>
-        </ResponsiveContainer>
-      ),
-    },
-    {
       title: "Key Metrics by Membership Duration",
       chart: (
         <ResponsiveContainer width="100%" height={300}>
@@ -249,9 +234,8 @@ const CommunityProfile = ({ data }) => {
       >
         <h3 className="text-xl font-semibold mb-2 text-purple-800">Community Health Score</h3>
         <div className="relative w-full h-8 bg-gradient-to-r from-red-500 via-yellow-500 to-green-500 rounded-full overflow-hidden">
-          <div className="absolute inset-0 bg-gray-200 rounded-full shadow-inner"></div>
           <motion.div
-            className="absolute top-0 left-0 bottom-0 bg-gray-100 rounded-full shadow-[inset_0_2px_4px_rgba(0,0,0,0.1)]"
+            className="absolute top-0 left-0 bottom-0 bg-gray-100 bg-opacity-80 rounded-full"
             initial={{ width: "0%" }}
             animate={{ width: `${healthScore}%` }}
             transition={{ duration: 1, ease: "easeInOut" }}
