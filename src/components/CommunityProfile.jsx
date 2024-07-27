@@ -4,8 +4,9 @@ import useEmblaCarousel from 'embla-carousel-react';
 import { ChevronLeft, ChevronRight, Play, Pause } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
+import { Skeleton } from "@/components/ui/skeleton";
 
-const CommunityProfile = ({ data, isMobile }) => {
+const CommunityProfile = ({ data, isMobile, isLoading }) => {
   const [healthScore, setHealthScore] = useState(0);
   const [retentionScore, setRetentionScore] = useState(0);
   const [engagementIndex, setEngagementIndex] = useState(0);
@@ -44,17 +45,21 @@ const CommunityProfile = ({ data, isMobile }) => {
       transition={{ duration: 0.5 }}
     >
       <h3 className="text-xl font-semibold mb-2 text-purple-800">Community Health Score</h3>
-      <div className="relative w-full h-8 bg-gradient-to-r from-red-500 via-yellow-500 to-green-500 rounded-full overflow-hidden">
-        <motion.div
-          className="absolute top-0 left-0 bottom-0 bg-gray-100 bg-opacity-80 rounded-full"
-          initial={{ width: "0%" }}
-          animate={{ width: `${healthScore}%` }}
-          transition={{ duration: 1, ease: "easeInOut" }}
-        />
-        <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-2xl font-bold text-gray-800 drop-shadow">{healthScore}%</span>
+      {isLoading ? (
+        <Skeleton className="h-8 w-full" />
+      ) : (
+        <div className="relative w-full h-8 bg-gradient-to-r from-red-500 via-yellow-500 to-green-500 rounded-full overflow-hidden">
+          <motion.div
+            className="absolute top-0 left-0 bottom-0 bg-gray-100 bg-opacity-80 rounded-full"
+            initial={{ width: "0%" }}
+            animate={{ width: `${healthScore}%` }}
+            transition={{ duration: 1, ease: "easeInOut" }}
+          />
+          <div className="absolute inset-0 flex items-center justify-center">
+            <span className="text-2xl font-bold text-gray-800 drop-shadow">{healthScore}%</span>
+          </div>
         </div>
-      </div>
+      )}
     </motion.div>
   );
 
@@ -81,12 +86,18 @@ const CommunityProfile = ({ data, isMobile }) => {
         <div className="relative">
           <div className="overflow-hidden" ref={emblaRef}>
             <div className="flex">
-              {visualizations.map((viz, index) => (
-                <div key={index} className="flex-[0_0_100%] min-w-0 px-4">
-                  <h4 className="text-lg font-semibold mb-2 text-blue-700">{viz.title}</h4>
-                  {viz.chart}
+              {isLoading ? (
+                <div className="flex-[0_0_100%] min-w-0 px-4">
+                  <Skeleton className="h-64 w-full" />
                 </div>
-              ))}
+              ) : (
+                visualizations.map((viz, index) => (
+                  <div key={index} className="flex-[0_0_100%] min-w-0 px-4">
+                    <h4 className="text-lg font-semibold mb-2 text-blue-700">{viz.title}</h4>
+                    {viz.chart}
+                  </div>
+                ))
+              )}
             </div>
           </div>
           <Button variant="outline" size="icon" className="absolute left-0 top-1/2 transform -translate-y-1/2 z-10" onClick={scrollPrev}>

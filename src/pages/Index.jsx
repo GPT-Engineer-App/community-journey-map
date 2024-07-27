@@ -6,12 +6,14 @@ import SurveyForm from "../components/SurveyForm";
 import CommunityProfile from "../components/CommunityProfile";
 import { Button } from "@/components/ui/button";
 import { Share2 } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const Index = () => {
   const [surveyData, setSurveyData] = useState({});
   const [showSummary, setShowSummary] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const checkDeviceSize = () => {
@@ -19,7 +21,16 @@ const Index = () => {
     };
     checkDeviceSize();
     window.addEventListener('resize', checkDeviceSize);
-    return () => window.removeEventListener('resize', checkDeviceSize);
+    
+    // Simulate loading delay
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 500);
+
+    return () => {
+      window.removeEventListener('resize', checkDeviceSize);
+      clearTimeout(timer);
+    };
   }, []);
 
   const handleSurveyUpdate = (newData, step) => {
@@ -47,6 +58,17 @@ const Index = () => {
   };
 
   const renderSurveyOrSummary = () => {
+    if (isLoading) {
+      return (
+        <div className="space-y-4">
+          <Skeleton className="h-8 w-3/4" />
+          <Skeleton className="h-32 w-full" />
+          <Skeleton className="h-32 w-full" />
+          <Skeleton className="h-32 w-full" />
+        </div>
+      );
+    }
+
     if (showSummary) {
       return (
         <div className="space-y-4">
@@ -102,7 +124,7 @@ const Index = () => {
               exit={isMobile ? { y: "100%" } : { x: "100%" }}
               transition={{ duration: 0.5, ease: "easeInOut" }}
             >
-              <CommunityProfile data={surveyData} isMobile={isMobile} />
+              <CommunityProfile data={surveyData} isMobile={isMobile} isLoading={isLoading} />
             </motion.div>
           )}
         </AnimatePresence>
