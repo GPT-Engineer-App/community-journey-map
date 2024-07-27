@@ -18,13 +18,19 @@ const CommunityProfile = ({ data, isMobile, isLoading }) => {
   }, []);
 
   const calculateHealthScore = useMemo(() => {
-    // ... (keep the existing calculation logic)
+    // Simple calculation for demo purposes
+    const satisfaction = parseInt(data.overallSatisfaction) || 0;
+    const welcome = parseInt(data.feelingOfWelcome) || 0;
+    const connection = parseInt(data.connectionToCommunity) || 0;
+    return Math.round((satisfaction + welcome + connection) / 3);
   }, [data]);
 
   useEffect(() => {
-    setHealthScore(calculateHealthScore);
-    // ... (keep the rest of the useEffect logic)
-  }, [data, calculateHealthScore]);
+    const newHealthScore = calculateHealthScore;
+    setHealthScore(newHealthScore);
+    setRetentionScore(Math.round(newHealthScore * 0.8)); // Example calculation
+    setEngagementIndex(Math.round(newHealthScore * 0.4)); // Example calculation
+  }, [calculateHealthScore]);
 
   useEffect(() => {
     if (!emblaApi || !autoplay) return;
@@ -140,7 +146,7 @@ const CommunityProfile = ({ data, isMobile, isLoading }) => {
             transition={{ duration: 1, ease: "easeInOut" }}
           />
           <div className="absolute inset-0 flex items-center justify-center">
-            <span className="text-2xl font-bold text-gray-800 drop-shadow">{healthScore}%</span>
+            <span className="text-2xl font-bold text-gray-800 drop-shadow">{healthScore}</span>
           </div>
         </div>
       )}
