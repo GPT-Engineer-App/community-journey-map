@@ -15,13 +15,7 @@ const Index = () => {
 
   useEffect(() => {
     const checkDeviceSize = () => {
-      if (window.innerWidth < 640) {
-        setIsMobile('mobile');
-      } else if (window.innerWidth < 1024) {
-        setIsMobile('tablet');
-      } else {
-        setIsMobile(false);
-      }
+      setIsMobile(window.innerWidth < 768);
     };
     checkDeviceSize();
     window.addEventListener('resize', checkDeviceSize);
@@ -80,18 +74,18 @@ const Index = () => {
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-blue-50 to-purple-50">
       <header className="bg-white shadow p-4 flex justify-between items-center">
         <h1 className="text-2xl md:text-3xl font-bold text-blue-800">Community Retention Survey</h1>
-        {surveyData.communityName && (
+        {surveyData.communityName && !isMobile && (
           <span className="text-lg font-semibold text-gray-600">{surveyData.communityName} - Community Profile</span>
         )}
       </header>
-      <div className="flex-grow flex flex-col lg:flex-row relative">
+      <div className="flex-grow flex flex-col md:flex-row relative">
         <motion.div
           className="p-4 overflow-y-auto"
           initial={{ width: "100%" }}
           animate={{ width: currentStep > 0 && !isMobile ? "50%" : "100%" }}
           transition={{ duration: 0.5, ease: "easeInOut" }}
         >
-          <div className="max-w-3xl mx-auto">
+          <div className="max-w-3xl mx-auto pb-20 md:pb-0">
             {renderSurveyOrSummary()}
           </div>
         </motion.div>
@@ -99,21 +93,16 @@ const Index = () => {
           {currentStep > 0 && (
             <motion.div
               className={`${
-                isMobile === 'mobile'
-                  ? 'absolute inset-x-0 bottom-0 h-1/2'
-                  : isMobile === 'tablet'
-                  ? 'w-full'
+                isMobile
+                  ? 'fixed inset-x-0 bottom-0'
                   : 'w-1/2'
-              } bg-white rounded-t-3xl lg:rounded-none shadow-lg lg:shadow-none`}
-              initial={isMobile !== false ? { y: "100%" } : { x: "100%" }}
-              animate={isMobile !== false ? { y: 0 } : { x: 0 }}
-              exit={isMobile !== false ? { y: "100%" } : { x: "100%" }}
+              } bg-white md:rounded-none shadow-lg md:shadow-none`}
+              initial={isMobile ? { y: "100%" } : { x: "100%" }}
+              animate={isMobile ? { y: 0 } : { x: 0 }}
+              exit={isMobile ? { y: "100%" } : { x: "100%" }}
               transition={{ duration: 0.5, ease: "easeInOut" }}
             >
-              <div className="h-1.5 w-12 bg-gray-300 rounded-full mx-auto my-2 lg:hidden" />
-              <div className="p-4 overflow-y-auto h-full">
-                <CommunityProfile data={surveyData} />
-              </div>
+              <CommunityProfile data={surveyData} isMobile={isMobile} />
             </motion.div>
           )}
         </AnimatePresence>
