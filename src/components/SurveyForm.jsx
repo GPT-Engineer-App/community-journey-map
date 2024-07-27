@@ -4,7 +4,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { Slider } from "@/components/ui/slider";
 import { Plus, Minus } from "lucide-react";
 
 const SurveyForm = ({ onUpdate, onSubmit }) => {
@@ -31,12 +30,12 @@ const SurveyForm = ({ onUpdate, onSubmit }) => {
     <div className="space-y-2">
       <Label className="text-lg font-semibold text-gray-700">{question}</Label>
       <p className="text-sm text-gray-500">{caption}</p>
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap md:flex-nowrap gap-2">
         {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
           <Button
             key={num}
             variant={formData[field] === num ? "default" : "outline"}
-            className="w-10 h-10 rounded-full"
+            className="w-full h-10 md:w-10 md:h-10 rounded-full"
             onClick={() => handleInputChange(field, num)}
           >
             {num}

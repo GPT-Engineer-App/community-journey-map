@@ -18,23 +18,58 @@ const CommunityProfile = ({ data, isMobile, isLoading }) => {
   }, []);
 
   const calculateHealthScore = useMemo(() => {
-    const satisfaction = parseInt(data.overallSatisfaction) || 0;
-    const welcome = parseInt(data.feelingOfWelcome) || 0;
-    const connection = parseInt(data.connectionToCommunity) || 0;
-    const renewal = parseInt(data.likelihoodToRenew) || 0;
-    const clarity = parseInt(data.clearPathway) || 0;
-    const ease = parseInt(data.easeOfFirstStep) || 0;
-    
-    const totalScore = satisfaction + welcome + connection + renewal + clarity + ease;
-    const maxPossibleScore = 60; // 6 questions, each with a max score of 10
+    const ratingQuestions = [
+      'overallSatisfaction',
+      'feelingOfWelcome',
+      'connectionToCommunity',
+      'likelihoodToRenew',
+      'clearPathway',
+      'easeOfFirstStep',
+      'goalConfidence',
+      'welcomeProcessSatisfaction',
+      'initialStepsClarity'
+    ];
+
+    const positiveTextQuestions = ['mostValuableAspect', 'primaryGoal'];
+    const negativeTextQuestions = ['leastValuableAspect', 'cancellationReason'];
+
+    let totalScore = 0;
+    let maxPossibleScore = ratingQuestions.length * 10; // 10 is the max rating
+
+    // Calculate score from rating questions
+    ratingQuestions.forEach(question => {
+      totalScore += parseInt(data[question]) || 0;
+    });
+
+    // Add score based on positive text responses
+    positiveTextQuestions.forEach(question => {
+      const responseLength = (data[question] || '').length;
+      if (responseLength > 100) totalScore += 10;
+      else if (responseLength > 50) totalScore += 5;
+      else if (responseLength > 0) totalScore += 2;
+      maxPossibleScore += 10; // Increase max possible score
+    });
+
+    // Subtract score based on negative text responses
+    negativeTextQuestions.forEach(question => {
+      const responseLength = (data[question] || '').length;
+      if (responseLength > 100) totalScore -= 10;
+      else if (responseLength > 50) totalScore -= 5;
+      else if (responseLength > 0) totalScore -= 2;
+      maxPossibleScore += 10; // Increase max possible score
+    });
+
+    // Ensure the score doesn't go below 0
+    totalScore = Math.max(0, totalScore);
     
     return Math.round((totalScore / maxPossibleScore) * 100);
   }, [data]);
 
   useEffect(() => {
-    setHealthScore(calculateHealthScore);
-    setRetentionScore(Math.round(calculateHealthScore * 0.8)); // Example calculation
-    setEngagementIndex(Math.round(calculateHealthScore * 0.4)); // Example calculation
+    const newHealthScore = calculateHealthScore;
+    setHealthScore(newHealthScore);
+    setRetentionScore(Math.round(newHealthScore * 0.8)); // Example calculation
+    setEngagementIndex(Math.round(newHealthScore * 0.4)); // Example calculation
   }, [calculateHealthScore]);
 
   useEffect(() => {
