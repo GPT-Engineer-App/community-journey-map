@@ -35,7 +35,91 @@ const CommunityProfile = ({ data, isMobile, isLoading }) => {
   const scrollPrev = useCallback(() => emblaApi && emblaApi.scrollPrev(), [emblaApi]);
   const scrollNext = useCallback(() => emblaApi && emblaApi.scrollNext(), [emblaApi]);
 
-  // ... (keep the chartData, radarData, npsData, and visualizations definitions)
+  const chartData = useMemo(() => {
+    const membershipDuration = data.membershipDuration || '0-3';
+    return [
+      {
+        duration: membershipDuration,
+        Satisfaction: parseInt(data.overallSatisfaction) || 0,
+        Retention: retentionScore,
+        Engagement: engagementIndex * 2, // Multiply by 2 to scale it to 0-10 range
+      }
+    ];
+  }, [data.membershipDuration, data.overallSatisfaction, retentionScore, engagementIndex]);
+
+  const radarData = [
+    { subject: 'Retention', A: retentionScore, fullMark: 10 },
+    { subject: 'Engagement', A: engagementIndex, fullMark: 5 },
+    { subject: 'Welcome', A: parseInt(data.feelingOfWelcome) || 0, fullMark: 10 },
+    { subject: 'Connection', A: parseInt(data.connectionToCommunity) || 0, fullMark: 10 },
+    { subject: 'Onboarding', A: parseInt(data.welcomeProcessSatisfaction) || 0, fullMark: 10 },
+  ];
+
+  const npsData = [
+    { name: 'Promoters', value: 60 },
+    { name: 'Passives', value: 30 },
+    { name: 'Detractors', value: 10 },
+  ];
+
+  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
+
+  const visualizations = [
+    {
+      title: "Retention Radar Chart",
+      chart: (
+        <ResponsiveContainer width="100%" height={300}>
+          <RadarChart outerRadius="80%" data={radarData}>
+            <PolarGrid />
+            <PolarAngleAxis dataKey="subject" />
+            <PolarRadiusAxis angle={30} domain={[0, 10]} />
+            <Radar name="Community" dataKey="A" stroke="#8884d8" fill="#8884d8" fillOpacity={0.6} />
+          </RadarChart>
+        </ResponsiveContainer>
+      ),
+    },
+    {
+      title: "NPS Distribution",
+      chart: (
+        <ResponsiveContainer width="100%" height={300}>
+          <PieChart>
+            <Pie
+              data={npsData}
+              cx="50%"
+              cy="50%"
+              innerRadius="60%"
+              outerRadius="80%"
+              fill="#8884d8"
+              paddingAngle={5}
+              dataKey="value"
+            >
+              {npsData.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+              ))}
+            </Pie>
+            <Tooltip />
+            <Legend />
+          </PieChart>
+        </ResponsiveContainer>
+      ),
+    },
+    {
+      title: "Key Metrics by Membership Duration",
+      chart: (
+        <ResponsiveContainer width="100%" height={300}>
+          <BarChart data={chartData}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="duration" />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            <Bar dataKey="Satisfaction" fill="#8884d8" />
+            <Bar dataKey="Retention" fill="#82ca9d" />
+            <Bar dataKey="Engagement" fill="#ffc658" />
+          </BarChart>
+        </ResponsiveContainer>
+      ),
+    },
+  ];
 
   const renderHealthScore = () => (
     <motion.div 
