@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, BarChart, Bar, PieChart, Pie, Cell } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, BarChart, Bar, PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 import useEmblaCarousel from 'embla-carousel-react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -92,61 +92,69 @@ const CommunityProfile = ({ data }) => {
     {
       title: "Retention Radar Chart",
       chart: (
-        <RadarChart outerRadius={90} width={400} height={300} data={radarData}>
-          <PolarGrid />
-          <PolarAngleAxis dataKey="subject" />
-          <PolarRadiusAxis angle={30} domain={[0, 10]} />
-          <Radar name="Community" dataKey="A" stroke="#8884d8" fill="#8884d8" fillOpacity={0.6} />
-        </RadarChart>
+        <ResponsiveContainer width="100%" height={300}>
+          <RadarChart outerRadius="80%" data={radarData}>
+            <PolarGrid />
+            <PolarAngleAxis dataKey="subject" />
+            <PolarRadiusAxis angle={30} domain={[0, 10]} />
+            <Radar name="Community" dataKey="A" stroke="#8884d8" fill="#8884d8" fillOpacity={0.6} />
+          </RadarChart>
+        </ResponsiveContainer>
       ),
     },
     {
       title: "NPS Distribution",
       chart: (
-        <PieChart width={400} height={300}>
-          <Pie
-            data={npsData}
-            cx={200}
-            cy={150}
-            innerRadius={60}
-            outerRadius={80}
-            fill="#8884d8"
-            paddingAngle={5}
-            dataKey="value"
-          >
-            {npsData.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-            ))}
-          </Pie>
-          <Tooltip />
-          <Legend />
-        </PieChart>
+        <ResponsiveContainer width="100%" height={300}>
+          <PieChart>
+            <Pie
+              data={npsData}
+              cx="50%"
+              cy="50%"
+              innerRadius="60%"
+              outerRadius="80%"
+              fill="#8884d8"
+              paddingAngle={5}
+              dataKey="value"
+            >
+              {npsData.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+              ))}
+            </Pie>
+            <Tooltip />
+            <Legend />
+          </PieChart>
+        </ResponsiveContainer>
       ),
     },
     {
       title: "Membership Duration vs. Retention Score",
       chart: (
-        <BarChart width={400} height={300} data={chartData}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" />
-          <YAxis />
-          <Tooltip />
-          <Legend />
-          <Bar dataKey="value" fill="#8884d8" />
-        </BarChart>
+        <ResponsiveContainer width="100%" height={300}>
+          <BarChart data={chartData}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="name" />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            <Bar dataKey="value" fill="#8884d8" />
+          </BarChart>
+        </ResponsiveContainer>
       ),
     },
     {
       title: "Key Metrics",
       chart: (
-        <LineChart width={400} height={300} data={chartData}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" />
-          <YAxis />
-          <Tooltip />
-          <Legend />
-          <Line type="monotone" dataKey="value" stroke="#8884d8" activeDot={{ r: 8 }} />
-        </LineChart>
+        <ResponsiveContainer width="100%" height={300}>
+          <LineChart data={chartData}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="name" />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            <Line type="monotone" dataKey="value" stroke="#8884d8" activeDot={{ r: 8 }} />
+          </LineChart>
+        </ResponsiveContainer>
       ),
     },
   ];
@@ -156,10 +164,10 @@ const CommunityProfile = ({ data }) => {
       <h2 className="text-2xl font-bold">Community Profile</h2>
       <div className="bg-white p-4 rounded-lg shadow">
         <h3 className="text-xl font-semibold mb-2">Community Health Score</h3>
-        <div className="relative w-full h-8 bg-gradient-to-r from-red-500 via-yellow-500 to-green-500 rounded-full">
+        <div className="relative w-full h-8 bg-gradient-to-r from-red-500 via-yellow-500 to-green-500 rounded-full overflow-hidden">
           <div
-            className="absolute top-0 right-0 bottom-0 bg-white rounded-full transition-all duration-500 ease-out"
-            style={{ left: `${healthScore * 10}%` }}
+            className="absolute top-0 left-0 bottom-0 bg-white rounded-full transition-all duration-1000 ease-out"
+            style={{ width: `${100 - healthScore * 10}%`, right: 0 }}
           ></div>
           <div className="absolute inset-0 flex items-center justify-center">
             <span className="text-2xl font-bold text-white drop-shadow">{healthScore}</span>
@@ -172,17 +180,17 @@ const CommunityProfile = ({ data }) => {
           <div className="overflow-hidden" ref={emblaRef}>
             <div className="flex">
               {visualizations.map((viz, index) => (
-                <div key={index} className="flex-[0_0_100%] min-w-0">
+                <div key={index} className="flex-[0_0_100%] min-w-0 px-4">
                   <h4 className="text-lg font-semibold mb-2">{viz.title}</h4>
                   {viz.chart}
                 </div>
               ))}
             </div>
           </div>
-          <Button variant="outline" size="icon" className="absolute left-0 top-1/2 transform -translate-y-1/2" onClick={scrollPrev}>
+          <Button variant="outline" size="icon" className="absolute left-0 top-1/2 transform -translate-y-1/2 z-10" onClick={scrollPrev}>
             <ChevronLeft className="h-4 w-4" />
           </Button>
-          <Button variant="outline" size="icon" className="absolute right-0 top-1/2 transform -translate-y-1/2" onClick={scrollNext}>
+          <Button variant="outline" size="icon" className="absolute right-0 top-1/2 transform -translate-y-1/2 z-10" onClick={scrollNext}>
             <ChevronRight className="h-4 w-4" />
           </Button>
         </div>
