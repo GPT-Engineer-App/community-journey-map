@@ -18,18 +18,23 @@ const CommunityProfile = ({ data, isMobile, isLoading }) => {
   }, []);
 
   const calculateHealthScore = useMemo(() => {
-    // Simple calculation for demo purposes
     const satisfaction = parseInt(data.overallSatisfaction) || 0;
     const welcome = parseInt(data.feelingOfWelcome) || 0;
     const connection = parseInt(data.connectionToCommunity) || 0;
-    return Math.round((satisfaction + welcome + connection) / 3);
+    const renewal = parseInt(data.likelihoodToRenew) || 0;
+    const clarity = parseInt(data.clearPathway) || 0;
+    const ease = parseInt(data.easeOfFirstStep) || 0;
+    
+    const totalScore = satisfaction + welcome + connection + renewal + clarity + ease;
+    const maxPossibleScore = 60; // 6 questions, each with a max score of 10
+    
+    return Math.round((totalScore / maxPossibleScore) * 100);
   }, [data]);
 
   useEffect(() => {
-    const newHealthScore = calculateHealthScore;
-    setHealthScore(newHealthScore);
-    setRetentionScore(Math.round(newHealthScore * 0.8)); // Example calculation
-    setEngagementIndex(Math.round(newHealthScore * 0.4)); // Example calculation
+    setHealthScore(calculateHealthScore);
+    setRetentionScore(Math.round(calculateHealthScore * 0.8)); // Example calculation
+    setEngagementIndex(Math.round(calculateHealthScore * 0.4)); // Example calculation
   }, [calculateHealthScore]);
 
   useEffect(() => {
