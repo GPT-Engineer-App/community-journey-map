@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, BarChart, Bar, PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 import useEmblaCarousel from 'embla-carousel-react';
 import { ChevronLeft, ChevronRight, Play, Pause } from 'lucide-react';
@@ -16,35 +16,95 @@ const CommunityProfile = ({ data }) => {
     setAutoplay((prev) => !prev);
   }, []);
 
+  const calculateHealthScore = useMemo(() => {
+    let score = 0;
+    let maxScore = 0;
+
+    // Overall Satisfaction (0-10)
+    if (data.overallSatisfaction) {
+      score += parseInt(data.overallSatisfaction);
+      maxScore += 10;
+    }
+
+    // Likelihood to Renew (0-10)
+    if (data.likelihoodToRenew) {
+      score += parseInt(data.likelihoodToRenew);
+      maxScore += 10;
+    }
+
+    // Participation Frequency
+    if (data.participationFrequency) {
+      const frequencyScore = {
+        daily: 5,
+        weekly: 4,
+        monthly: 3,
+        quarterly: 2,
+        rarely: 1
+      }[data.participationFrequency] || 0;
+      score += frequencyScore;
+      maxScore += 5;
+    }
+
+    // Events Attended (0-5)
+    if (data.eventsAttended) {
+      const eventsScore = Math.min(parseInt(data.eventsAttended), 5);
+      score += eventsScore;
+      maxScore += 5;
+    }
+
+    // Feeling of Welcome (0-10)
+    if (data.feelingOfWelcome) {
+      score += parseInt(data.feelingOfWelcome);
+      maxScore += 10;
+    }
+
+    // Connection to Community (0-10)
+    if (data.connectionToCommunity) {
+      score += parseInt(data.connectionToCommunity);
+      maxScore += 10;
+    }
+
+    // Welcome Process Satisfaction (0-10)
+    if (data.welcomeProcessSatisfaction) {
+      score += parseInt(data.welcomeProcessSatisfaction);
+      maxScore += 10;
+    }
+
+    // Clear Pathway to Improvement (0-10)
+    if (data.clearPathway) {
+      score += parseInt(data.clearPathway);
+      maxScore += 10;
+    }
+
+    // Ease of Taking First Step (0-10)
+    if (data.easeOfFirstStep) {
+      score += parseInt(data.easeOfFirstStep);
+      maxScore += 10;
+    }
+
+    // Goal Confidence (0-10)
+    if (data.goalConfidence) {
+      score += parseInt(data.goalConfidence);
+      maxScore += 10;
+    }
+
+    // Initial Steps Clarity (0-10)
+    if (data.initialStepsClarity) {
+      score += parseInt(data.initialStepsClarity);
+      maxScore += 10;
+    }
+
+    // Considering Cancellation (boolean)
+    if (data.considerCancellation === false) {
+      score += 10;
+    }
+    maxScore += 10;
+
+    return maxScore > 0 ? Math.round((score / maxScore) * 100) : 0;
+  }, [data]);
+
   useEffect(() => {
-    const calculateHealthScore = () => {
-      let score = 0;
-      let factors = 0;
-
-      if (data.overallSatisfaction) {
-        score += parseInt(data.overallSatisfaction);
-        factors++;
-      }
-
-      if (data.likelihoodToRenew) {
-        score += parseInt(data.likelihoodToRenew);
-        factors++;
-      }
-
-      if (data.participationFrequency) {
-        const frequencyScore = {
-          daily: 5,
-          weekly: 4,
-          monthly: 3,
-          quarterly: 2,
-          rarely: 1
-        }[data.participationFrequency] || 0;
-        score += frequencyScore;
-        factors++;
-      }
-
-      return factors > 0 ? Math.round((score / factors) * 10) : 0;
-    };
+    setHealthScore(calculateHealthScore);
 
     const calculateRetentionScore = () => {
       const likelihood = parseInt(data.likelihoodToRenew) || 0;
@@ -64,10 +124,9 @@ const CommunityProfile = ({ data }) => {
       return Math.round((frequencyPoints + eventsPoints) / 2);
     };
 
-    setHealthScore(calculateHealthScore());
     setRetentionScore(calculateRetentionScore());
     setEngagementIndex(calculateEngagementIndex());
-  }, [data]);
+  }, [data, calculateHealthScore]);
 
   useEffect(() => {
     if (!emblaApi || !autoplay) return;
@@ -186,11 +245,11 @@ const CommunityProfile = ({ data }) => {
           <motion.div
             className="absolute top-0 left-0 bottom-0 bg-gray-100 rounded-full shadow-[inset_0_2px_4px_rgba(0,0,0,0.1)]"
             initial={{ width: "0%" }}
-            animate={{ width: `${healthScore * 10}%` }}
+            animate={{ width: `${healthScore}%` }}
             transition={{ duration: 1, ease: "easeInOut" }}
           />
           <div className="absolute inset-0 flex items-center justify-center">
-            <span className="text-2xl font-bold text-gray-800 drop-shadow">{healthScore}</span>
+            <span className="text-2xl font-bold text-gray-800 drop-shadow">{healthScore}%</span>
           </div>
         </div>
       </motion.div>
