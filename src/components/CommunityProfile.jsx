@@ -198,31 +198,48 @@ const CommunityProfile = ({ data, isMobile, isLoading }) => {
     },
   ];
 
-  const renderHealthScore = () => (
-    <motion.div 
-      className="bg-white p-4 rounded-lg shadow-lg"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-    >
-      <h3 className="text-xl font-semibold mb-2 text-purple-800">Community Health Score</h3>
-      {isLoading ? (
-        <Skeleton className="h-8 w-full" />
-      ) : (
-        <div className="relative w-full h-8 bg-gradient-to-r from-red-500 via-yellow-500 to-green-500 rounded-full overflow-hidden">
-          <motion.div
-            className="absolute top-0 left-0 bottom-0 bg-gray-100 bg-opacity-80 rounded-full"
-            initial={{ width: "0%" }}
-            animate={{ width: `${healthScore}%` }}
-            transition={{ duration: 1, ease: "easeInOut" }}
-          />
-          <div className="absolute inset-0 flex items-center justify-center">
-            <span className="text-2xl font-bold text-gray-800 drop-shadow">{healthScore}</span>
+  const getHealthScoreEmoji = (score) => {
+    if (score < 20) return { emoji: "😑", description: "Disengaged" };
+    if (score < 40) return { emoji: "🤨", description: "Skeptical" };
+    if (score < 60) return { emoji: "😐", description: "Neutral" };
+    if (score < 80) return { emoji: "🙂", description: "Engaged" };
+    return { emoji: "🤩", description: "Enthusiastic" };
+  };
+
+  const renderHealthScore = () => {
+    const { emoji, description } = getHealthScoreEmoji(healthScore);
+    return (
+      <motion.div 
+        className="bg-white p-4 rounded-lg shadow-lg"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <h3 className="text-xl font-semibold mb-2 text-purple-800">Community Health Score</h3>
+        {isLoading ? (
+          <Skeleton className="h-16 w-full" />
+        ) : (
+          <div className="space-y-2">
+            <div className="relative w-full h-8 bg-gradient-to-r from-red-500 via-yellow-500 to-green-500 rounded-full overflow-hidden">
+              <motion.div
+                className="absolute top-0 left-0 bottom-0 bg-gray-100 bg-opacity-80 rounded-full"
+                initial={{ width: "0%" }}
+                animate={{ width: `${healthScore}%` }}
+                transition={{ duration: 1, ease: "easeInOut" }}
+              />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <span className="text-2xl font-bold text-gray-800 drop-shadow">{healthScore}</span>
+              </div>
+            </div>
+            <div className="flex items-center justify-center space-x-2">
+              <span className="text-4xl" role="img" aria-label={description}>{emoji}</span>
+              <span className="text-lg font-medium text-gray-700">{description}</span>
+            </div>
           </div>
-        </div>
-      )}
-    </motion.div>
-  );
+        )}
+      </motion.div>
+    );
+  };
 
   if (isMobile) {
     return renderHealthScore();
