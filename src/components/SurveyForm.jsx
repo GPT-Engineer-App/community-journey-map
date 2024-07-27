@@ -1,21 +1,23 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const SurveyForm = ({ onUpdate }) => {
   const [step, setStep] = useState(0);
   const [formData, setFormData] = useState({});
 
+  useEffect(() => {
+    onUpdate(formData);
+  }, [formData, onUpdate]);
+
   const handleInputChange = (field, value) => {
-    const newData = { ...formData, [field]: value };
-    setFormData(newData);
-    onUpdate(newData);
+    setFormData(prevData => ({ ...prevData, [field]: value }));
   };
 
   const renderStep = () => {
@@ -23,8 +25,38 @@ const SurveyForm = ({ onUpdate }) => {
       case 0:
         return (
           <>
-            <h2 className="text-xl font-semibold mb-4">Member Information</h2>
+            <h2 className="text-xl font-semibold mb-4">Participant Information</h2>
             <div className="space-y-4">
+              <div>
+                <Label htmlFor="participantName">Your Name</Label>
+                <Input
+                  id="participantName"
+                  placeholder="Enter your full name"
+                  value={formData.participantName || ""}
+                  onChange={(e) => handleInputChange("participantName", e.target.value)}
+                />
+              </div>
+              <div>
+                <Label htmlFor="participantEmail">Your Email</Label>
+                <Input
+                  id="participantEmail"
+                  type="email"
+                  placeholder="Enter your email address"
+                  value={formData.participantEmail || ""}
+                  onChange={(e) => handleInputChange("participantEmail", e.target.value)}
+                />
+              </div>
+              <div>
+                <Label>Your Role</Label>
+                <RadioGroup onValueChange={(value) => handleInputChange("participantRole", value)} value={formData.participantRole}>
+                  {["Member", "Owner", "Admin", "Moderator", "CSM", "Support"].map((role) => (
+                    <div key={role} className="flex items-center space-x-2">
+                      <RadioGroupItem value={role} id={`role-${role}`} />
+                      <Label htmlFor={`role-${role}`}>{role}</Label>
+                    </div>
+                  ))}
+                </RadioGroup>
+              </div>
               <div>
                 <Label htmlFor="communityName">Community Name</Label>
                 <Input
@@ -37,7 +69,7 @@ const SurveyForm = ({ onUpdate }) => {
               </div>
               <div>
                 <Label htmlFor="membershipDuration">Membership Duration</Label>
-                <Select onValueChange={(value) => handleInputChange("membershipDuration", value)}>
+                <Select onValueChange={(value) => handleInputChange("membershipDuration", value)} value={formData.membershipDuration}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select duration" />
                   </SelectTrigger>
@@ -330,7 +362,7 @@ const SurveyForm = ({ onUpdate }) => {
         {step < 6 ? (
           <Button onClick={() => setStep(step + 1)}>Next</Button>
         ) : (
-          <Button onClick={() => console.log("Survey completed")}>Submit</Button>
+          <Button onClick={onSubmit}>Submit</Button>
         )}
       </div>
     </div>
