@@ -30,7 +30,7 @@ const SurveyForm = ({ onUpdate, onSubmit }) => {
     <div className="space-y-2">
       <Label className="text-lg font-semibold text-gray-700">{question}</Label>
       <p className="text-sm text-gray-500">{caption}</p>
-      <div className="flex flex-wrap md:flex-nowrap gap-2">
+      <div className="grid grid-cols-5 md:flex md:flex-wrap gap-2">
         {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
           <Button
             key={num}

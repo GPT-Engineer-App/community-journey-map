@@ -33,6 +33,9 @@ const CommunityProfile = ({ data, isMobile, isLoading }) => {
     const positiveTextQuestions = ['mostValuableAspect', 'primaryGoal'];
     const negativeTextQuestions = ['leastValuableAspect', 'cancellationReason'];
 
+    // Engagement answers
+    const engagementQuestions = ['participationFrequency', 'eventsAttended'];
+
     let totalScore = 0;
     let maxPossibleScore = ratingQuestions.length * 10; // 10 is the max rating
 
@@ -58,6 +61,20 @@ const CommunityProfile = ({ data, isMobile, isLoading }) => {
       else if (responseLength > 0) totalScore -= 2;
       maxPossibleScore += 10; // Increase max possible score
     });
+
+    // Add score based on engagement answers
+    if (data.participationFrequency === 'daily') totalScore += 10;
+    else if (data.participationFrequency === 'weekly') totalScore += 8;
+    else if (data.participationFrequency === 'monthly') totalScore += 6;
+    else if (data.participationFrequency === 'quarterly') totalScore += 4;
+    else if (data.participationFrequency === 'rarely') totalScore += 2;
+    maxPossibleScore += 10;
+
+    const eventsAttended = parseInt(data.eventsAttended) || 0;
+    if (eventsAttended >= 5) totalScore += 10;
+    else if (eventsAttended >= 3) totalScore += 7;
+    else if (eventsAttended >= 1) totalScore += 5;
+    maxPossibleScore += 10;
 
     // Ensure the score doesn't go below 0
     totalScore = Math.max(0, totalScore);
