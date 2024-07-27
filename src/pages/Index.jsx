@@ -69,7 +69,11 @@ const Index = () => {
         </div>
       );
     }
-    return <SurveyForm onUpdate={handleSurveyUpdate} onSubmit={handleSubmit} />;
+    return (
+      <div className="bg-white p-6 rounded-lg shadow-md">
+        <SurveyForm onUpdate={handleSurveyUpdate} onSubmit={handleSubmit} />
+      </div>
+    );
   };
 
   return (
@@ -87,7 +91,9 @@ const Index = () => {
           animate={{ width: currentStep > 0 && !isMobile ? "50%" : "100%" }}
           transition={{ duration: 0.5, ease: "easeInOut" }}
         >
-          {renderSurveyOrSummary()}
+          <div className="max-w-3xl mx-auto">
+            {renderSurveyOrSummary()}
+          </div>
         </motion.div>
         <AnimatePresence>
           {currentStep > 0 && (

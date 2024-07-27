@@ -7,6 +7,7 @@ import { Slider } from "@/components/ui/slider";
 import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Plus, Minus } from "lucide-react";
 
 const SurveyForm = ({ onUpdate, onSubmit }) => {
   const [step, setStep] = useState(0);
@@ -56,14 +57,18 @@ const SurveyForm = ({ onUpdate, onSubmit }) => {
               </div>
               <div>
                 <Label>Your Role</Label>
-                <RadioGroup onValueChange={(value) => handleInputChange("participantRole", value)} value={formData.participantRole}>
+                <div className="flex flex-wrap gap-2 mt-2">
                   {["Member", "Owner", "Admin", "Moderator", "CSM", "Support"].map((role) => (
-                    <div key={role} className="flex items-center space-x-2">
-                      <RadioGroupItem value={role} id={`role-${role}`} />
-                      <Label htmlFor={`role-${role}`}>{role}</Label>
-                    </div>
+                    <Button
+                      key={role}
+                      variant={formData.participantRole === role ? "default" : "outline"}
+                      onClick={() => handleInputChange("participantRole", role)}
+                      className="flex-grow"
+                    >
+                      {role}
+                    </Button>
                   ))}
-                </RadioGroup>
+                </div>
               </div>
               <div>
                 <Label htmlFor="communityName">Community Name</Label>
@@ -101,29 +106,45 @@ const SurveyForm = ({ onUpdate, onSubmit }) => {
             <div className="space-y-4">
               <div>
                 <Label htmlFor="participationFrequency">Participation Frequency</Label>
-                <Select onValueChange={(value) => handleInputChange("participationFrequency", value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select frequency" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="daily">Daily</SelectItem>
-                    <SelectItem value="weekly">Weekly</SelectItem>
-                    <SelectItem value="monthly">Monthly</SelectItem>
-                    <SelectItem value="quarterly">Quarterly</SelectItem>
-                    <SelectItem value="rarely">Rarely</SelectItem>
-                  </SelectContent>
-                </Select>
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {["Daily", "Weekly", "Monthly", "Quarterly", "Rarely"].map((frequency) => (
+                    <Button
+                      key={frequency}
+                      variant={formData.participationFrequency === frequency.toLowerCase() ? "default" : "outline"}
+                      onClick={() => handleInputChange("participationFrequency", frequency.toLowerCase())}
+                      className="flex-grow"
+                    >
+                      {frequency}
+                    </Button>
+                  ))}
+                </div>
                 <p className="text-sm text-gray-500 mt-1">How often do you actively participate in community discussions or events?</p>
               </div>
               <div>
                 <Label htmlFor="eventsAttended">Number of Events Attended (Last 3 Months)</Label>
-                <Input
-                  id="eventsAttended"
-                  type="number"
-                  placeholder="Enter number of events"
-                  value={formData.eventsAttended || ""}
-                  onChange={(e) => handleInputChange("eventsAttended", e.target.value)}
-                />
+                <div className="flex items-center space-x-2 mt-2">
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => handleInputChange("eventsAttended", Math.max(0, (parseInt(formData.eventsAttended) || 0) - 1))}
+                  >
+                    <Minus className="h-4 w-4" />
+                  </Button>
+                  <Input
+                    id="eventsAttended"
+                    type="number"
+                    className="text-center"
+                    value={formData.eventsAttended || "0"}
+                    onChange={(e) => handleInputChange("eventsAttended", e.target.value)}
+                  />
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => handleInputChange("eventsAttended", (parseInt(formData.eventsAttended) || 0) + 1)}
+                  >
+                    <Plus className="h-4 w-4" />
+                  </Button>
+                </div>
                 <p className="text-sm text-gray-500 mt-1">Include both online and offline events, workshops, or webinars you've attended.</p>
               </div>
             </div>
