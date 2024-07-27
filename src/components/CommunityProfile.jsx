@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, BarChart, Bar, PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 import useEmblaCarousel from 'embla-carousel-react';
-import { ChevronLeft, ChevronRight, Lock, Unlock } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Play, Pause } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 
@@ -182,10 +182,11 @@ const CommunityProfile = ({ data }) => {
       >
         <h3 className="text-xl font-semibold mb-2 text-purple-800">Community Health Score</h3>
         <div className="relative w-full h-8 bg-gradient-to-r from-red-500 via-yellow-500 to-green-500 rounded-full overflow-hidden">
+          <div className="absolute inset-0 bg-gray-200 rounded-full"></div>
           <motion.div
-            className="absolute top-0 left-0 bottom-0 bg-white rounded-full"
-            initial={{ width: "100%" }}
-            animate={{ width: `${100 - healthScore * 10}%` }}
+            className="absolute top-0 left-0 bottom-0 bg-gradient-to-r from-red-500 via-yellow-500 to-green-500 rounded-full"
+            initial={{ width: "0%" }}
+            animate={{ width: `${healthScore * 10}%` }}
             transition={{ duration: 1, ease: "easeInOut" }}
           />
           <div className="absolute inset-0 flex items-center justify-center">
@@ -202,7 +203,7 @@ const CommunityProfile = ({ data }) => {
         <div className="flex justify-between items-center mb-2">
           <h3 className="text-xl font-semibold text-purple-800">Visualizations</h3>
           <Button variant="outline" size="sm" onClick={toggleAutoplay}>
-            {autoplay ? <Lock className="h-4 w-4" /> : <Unlock className="h-4 w-4" />}
+            {autoplay ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
           </Button>
         </div>
         <div className="relative">
