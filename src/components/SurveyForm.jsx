@@ -298,17 +298,11 @@ const SurveyForm = ({ onUpdate, onSubmit }) => {
                 />
                 <p className="text-sm text-gray-500 mt-1">What is the main goal you hope to achieve through your membership?</p>
               </div>
-              <div>
-                <Label>Confidence in Achieving Goal</Label>
-                <Slider
-                  min={1}
-                  max={10}
-                  step={1}
-                  value={[formData.goalConfidence || 5]}
-                  onValueChange={(value) => handleInputChange("goalConfidence", value[0])}
-                />
-                <p className="text-sm text-gray-500 mt-1">How confident are you that you'll achieve this goal through the community? (1 = Not at all Confident, 10 = Extremely Confident)</p>
-              </div>
+              <RatingQuestion
+                question="Confidence in Achieving Goal"
+                field="goalConfidence"
+                caption="How confident are you that you'll achieve this goal through the community? (1 = Not at all Confident, 10 = Extremely Confident)"
+              />
               <div>
                 <Label htmlFor="additionalSupport">Additional Support Needed</Label>
                 <Textarea
