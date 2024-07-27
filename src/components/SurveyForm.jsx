@@ -326,29 +326,17 @@ const SurveyForm = ({ onUpdate, onSubmit }) => {
         return (
           <>
             <h2 className="text-xl font-semibold mb-4">Onboarding Experience</h2>
-            <div className="space-y-4">
-              <div>
-                <Label>Satisfaction with Welcome Process</Label>
-                <Slider
-                  min={1}
-                  max={10}
-                  step={1}
-                  value={[formData.welcomeProcessSatisfaction || 5]}
-                  onValueChange={(value) => handleInputChange("welcomeProcessSatisfaction", value[0])}
-                />
-                <p className="text-sm text-gray-500 mt-1">How satisfied were you with the welcome process when you first joined? (1 = Very Dissatisfied, 10 = Very Satisfied)</p>
-              </div>
-              <div>
-                <Label>Clarity of Initial Steps</Label>
-                <Slider
-                  min={1}
-                  max={10}
-                  step={1}
-                  value={[formData.initialStepsClarity || 5]}
-                  onValueChange={(value) => handleInputChange("initialStepsClarity", value[0])}
-                />
-                <p className="text-sm text-gray-500 mt-1">How clear were the initial steps you needed to take as a new member? (1 = Very Unclear, 10 = Very Clear)</p>
-              </div>
+            <div className="space-y-6">
+              <RatingQuestion
+                question="Satisfaction with Welcome Process"
+                field="welcomeProcessSatisfaction"
+                caption="How satisfied were you with the welcome process when you first joined? (1 = Very Dissatisfied, 10 = Very Satisfied)"
+              />
+              <RatingQuestion
+                question="Clarity of Initial Steps"
+                field="initialStepsClarity"
+                caption="How clear were the initial steps you needed to take as a new member? (1 = Very Unclear, 10 = Very Clear)"
+              />
               <div>
                 <Label htmlFor="onboardingImprovements">Suggested Onboarding Improvements</Label>
                 <Textarea
