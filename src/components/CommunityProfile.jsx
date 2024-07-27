@@ -182,15 +182,15 @@ const CommunityProfile = ({ data }) => {
       >
         <h3 className="text-xl font-semibold mb-2 text-purple-800">Community Health Score</h3>
         <div className="relative w-full h-8 bg-gradient-to-r from-red-500 via-yellow-500 to-green-500 rounded-full overflow-hidden">
-          <div className="absolute inset-0 bg-gray-200 rounded-full"></div>
+          <div className="absolute inset-0 bg-gray-200 rounded-full shadow-inner"></div>
           <motion.div
-            className="absolute top-0 left-0 bottom-0 bg-gradient-to-r from-red-500 via-yellow-500 to-green-500 rounded-full"
+            className="absolute top-0 left-0 bottom-0 bg-gray-100 rounded-full shadow-[inset_0_2px_4px_rgba(0,0,0,0.1)]"
             initial={{ width: "0%" }}
             animate={{ width: `${healthScore * 10}%` }}
             transition={{ duration: 1, ease: "easeInOut" }}
           />
           <div className="absolute inset-0 flex items-center justify-center">
-            <span className="text-2xl font-bold text-white drop-shadow">{healthScore}</span>
+            <span className="text-2xl font-bold text-gray-800 drop-shadow">{healthScore}</span>
           </div>
         </div>
       </motion.div>
