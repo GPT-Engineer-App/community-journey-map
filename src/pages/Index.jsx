@@ -1,6 +1,6 @@
 // Update this page (the content is just a fallback if you fail to update the page)
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import SurveyForm from "../components/SurveyForm";
 import CommunityProfile from "../components/CommunityProfile";
@@ -11,6 +11,22 @@ const Index = () => {
   const [surveyData, setSurveyData] = useState({});
   const [showSummary, setShowSummary] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkDeviceSize = () => {
+      if (window.innerWidth < 640) {
+        setIsMobile('mobile');
+      } else if (window.innerWidth < 1024) {
+        setIsMobile('tablet');
+      } else {
+        setIsMobile(false);
+      }
+    };
+    checkDeviceSize();
+    window.addEventListener('resize', checkDeviceSize);
+    return () => window.removeEventListener('resize', checkDeviceSize);
+  }, []);
 
   const handleSurveyUpdate = (newData, step) => {
     setSurveyData(newData);
@@ -64,11 +80,11 @@ const Index = () => {
           <span className="text-lg font-semibold text-gray-600">{surveyData.communityName} - Community Profile</span>
         )}
       </header>
-      <div className="flex-grow flex">
+      <div className="flex-grow flex flex-col lg:flex-row relative">
         <motion.div
           className="p-4 overflow-y-auto"
           initial={{ width: "100%" }}
-          animate={{ width: currentStep > 0 ? "50%" : "100%" }}
+          animate={{ width: currentStep > 0 && !isMobile ? "50%" : "100%" }}
           transition={{ duration: 0.5, ease: "easeInOut" }}
         >
           {renderSurveyOrSummary()}
@@ -76,13 +92,22 @@ const Index = () => {
         <AnimatePresence>
           {currentStep > 0 && (
             <motion.div
-              className="w-1/2 p-4 overflow-y-auto"
-              initial={{ x: "100%", opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{ x: "100%", opacity: 0 }}
+              className={`${
+                isMobile === 'mobile'
+                  ? 'absolute inset-x-0 bottom-0 h-1/2'
+                  : isMobile === 'tablet'
+                  ? 'w-full'
+                  : 'w-1/2'
+              } bg-white rounded-t-3xl lg:rounded-none shadow-lg lg:shadow-none`}
+              initial={isMobile !== false ? { y: "100%" } : { x: "100%" }}
+              animate={isMobile !== false ? { y: 0 } : { x: 0 }}
+              exit={isMobile !== false ? { y: "100%" } : { x: "100%" }}
               transition={{ duration: 0.5, ease: "easeInOut" }}
             >
-              <CommunityProfile data={surveyData} />
+              <div className="h-1.5 w-12 bg-gray-300 rounded-full mx-auto my-2 lg:hidden" />
+              <div className="p-4 overflow-y-auto h-full">
+                <CommunityProfile data={surveyData} />
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
