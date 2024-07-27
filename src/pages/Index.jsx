@@ -1,6 +1,7 @@
 // Update this page (the content is just a fallback if you fail to update the page)
 
 import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import SurveyForm from "../components/SurveyForm";
 import CommunityProfile from "../components/CommunityProfile";
 import { Button } from "@/components/ui/button";
@@ -9,9 +10,11 @@ import { Share2 } from "lucide-react";
 const Index = () => {
   const [surveyData, setSurveyData] = useState({});
   const [showSummary, setShowSummary] = useState(false);
+  const [currentStep, setCurrentStep] = useState(0);
 
-  const handleSurveyUpdate = (newData) => {
+  const handleSurveyUpdate = (newData, step) => {
     setSurveyData(newData);
+    setCurrentStep(step);
   };
 
   const handleSubmit = () => {
@@ -61,13 +64,28 @@ const Index = () => {
           <span className="text-lg font-semibold text-gray-600">{surveyData.communityName} - Community Profile</span>
         )}
       </header>
-      <div className="flex-grow flex flex-col lg:flex-row">
-        <div className="w-full lg:w-1/2 p-4 overflow-y-auto">
+      <div className="flex-grow flex">
+        <motion.div
+          className="p-4 overflow-y-auto"
+          initial={{ width: "100%" }}
+          animate={{ width: currentStep > 0 ? "50%" : "100%" }}
+          transition={{ duration: 0.5, ease: "easeInOut" }}
+        >
           {renderSurveyOrSummary()}
-        </div>
-        <div className="w-full lg:w-1/2 p-4 overflow-y-auto">
-          <CommunityProfile data={surveyData} />
-        </div>
+        </motion.div>
+        <AnimatePresence>
+          {currentStep > 0 && (
+            <motion.div
+              className="w-1/2 p-4 overflow-y-auto"
+              initial={{ x: "100%", opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: "100%", opacity: 0 }}
+              transition={{ duration: 0.5, ease: "easeInOut" }}
+            >
+              <CommunityProfile data={surveyData} />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );

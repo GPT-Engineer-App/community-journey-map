@@ -8,16 +8,24 @@ import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 
-const SurveyForm = ({ onUpdate }) => {
+const SurveyForm = ({ onUpdate, onSubmit }) => {
   const [step, setStep] = useState(0);
   const [formData, setFormData] = useState({});
 
   useEffect(() => {
-    onUpdate(formData);
-  }, [formData, onUpdate]);
+    onUpdate(formData, step);
+  }, [formData, step, onUpdate]);
 
   const handleInputChange = (field, value) => {
     setFormData(prevData => ({ ...prevData, [field]: value }));
+  };
+
+  const handleNextStep = () => {
+    setStep(prevStep => prevStep + 1);
+  };
+
+  const handlePreviousStep = () => {
+    setStep(prevStep => prevStep - 1);
   };
 
   const renderStep = () => {
@@ -357,10 +365,10 @@ const SurveyForm = ({ onUpdate }) => {
       {renderStep()}
       <div className="flex justify-between">
         {step > 0 && (
-          <Button onClick={() => setStep(step - 1)}>Previous</Button>
+          <Button onClick={handlePreviousStep}>Previous</Button>
         )}
         {step < 6 ? (
-          <Button onClick={() => setStep(step + 1)}>Next</Button>
+          <Button onClick={handleNextStep}>Next</Button>
         ) : (
           <Button onClick={onSubmit}>Submit</Button>
         )}
