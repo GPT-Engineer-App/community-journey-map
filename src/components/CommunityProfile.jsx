@@ -137,11 +137,17 @@ const CommunityProfile = ({ data }) => {
   const scrollPrev = useCallback(() => emblaApi && emblaApi.scrollPrev(), [emblaApi]);
   const scrollNext = useCallback(() => emblaApi && emblaApi.scrollNext(), [emblaApi]);
 
-  const chartData = [
-    { name: 'Satisfaction', value: parseInt(data.overallSatisfaction) || 0 },
-    { name: 'Renewal', value: parseInt(data.likelihoodToRenew) || 0 },
-    { name: 'Health Score', value: healthScore },
-  ];
+  const chartData = useMemo(() => {
+    const membershipDuration = data.membershipDuration || '0-3';
+    return [
+      {
+        duration: membershipDuration,
+        Satisfaction: parseInt(data.overallSatisfaction) || 0,
+        Retention: retentionScore,
+        Engagement: engagementIndex * 2, // Multiply by 2 to scale it to 0-10 range
+      }
+    ];
+  }, [data.membershipDuration, data.overallSatisfaction, retentionScore, engagementIndex]);
 
   const radarData = [
     { subject: 'Retention', A: retentionScore, fullMark: 10 },
@@ -214,17 +220,19 @@ const CommunityProfile = ({ data }) => {
       ),
     },
     {
-      title: "Key Metrics",
+      title: "Key Metrics by Membership Duration",
       chart: (
         <ResponsiveContainer width="100%" height={300}>
-          <LineChart data={chartData}>
+          <BarChart data={chartData}>
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" />
+            <XAxis dataKey="duration" />
             <YAxis />
             <Tooltip />
             <Legend />
-            <Line type="monotone" dataKey="value" stroke="#8884d8" activeDot={{ r: 8 }} />
-          </LineChart>
+            <Bar dataKey="Satisfaction" fill="#8884d8" />
+            <Bar dataKey="Retention" fill="#82ca9d" />
+            <Bar dataKey="Engagement" fill="#ffc658" />
+          </BarChart>
         </ResponsiveContainer>
       ),
     },
