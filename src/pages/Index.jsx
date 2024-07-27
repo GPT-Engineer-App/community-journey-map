@@ -12,12 +12,12 @@ const Index = () => {
   };
 
   return (
-    <div className="flex flex-col lg:flex-row min-h-screen">
+    <div className="flex flex-col lg:flex-row min-h-screen bg-gradient-to-br from-blue-50 to-purple-50">
       <div className="w-full lg:w-1/2 p-4 overflow-y-auto">
-        <h1 className="text-2xl md:text-3xl font-bold mb-4">Community Retention Survey</h1>
+        <h1 className="text-2xl md:text-3xl font-bold mb-4 text-blue-800">Community Retention Survey</h1>
         <SurveyForm onUpdate={handleSurveyUpdate} />
       </div>
-      <div className="w-full lg:w-1/2 p-4 bg-gray-100 overflow-y-auto">
+      <div className="w-full lg:w-1/2 p-4 overflow-y-auto">
         <CommunityProfile data={surveyData} />
       </div>
     </div>
