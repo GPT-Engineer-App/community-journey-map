@@ -10,12 +10,26 @@ const CommunityProfile = ({ data, isMobile, isLoading }) => {
   const [healthScore, setHealthScore] = useState(0);
   const [retentionScore, setRetentionScore] = useState(0);
   const [engagementIndex, setEngagementIndex] = useState(0);
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, dragFree: true });
   const [autoplay, setAutoplay] = useState(true);
+  const [selectedIndex, setSelectedIndex] = useState(0);
 
   const toggleAutoplay = useCallback(() => {
     setAutoplay((prev) => !prev);
   }, []);
+
+  useEffect(() => {
+    if (!emblaApi || !autoplay) return;
+    const interval = setInterval(() => emblaApi.scrollNext(), 9000); // 300% longer duration
+    return () => clearInterval(interval);
+  }, [emblaApi, autoplay]);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+    emblaApi.on('select', () => {
+      setSelectedIndex(emblaApi.selectedScrollSnap());
+    });
+  }, [emblaApi]);
 
   const calculateHealthScore = useMemo(() => {
     const ratingQuestions = [
@@ -253,6 +267,17 @@ const CommunityProfile = ({ data, isMobile, isLoading }) => {
           <Button variant="outline" size="icon" className="absolute right-0 top-1/2 transform -translate-y-1/2 z-10" onClick={scrollNext}>
             <ChevronRight className="h-4 w-4" />
           </Button>
+        </div>
+        <div className="flex justify-center mt-4">
+          {visualizations.map((_, index) => (
+            <button
+              key={index}
+              className={`w-2 h-2 rounded-full mx-1 ${
+                index === selectedIndex ? 'bg-blue-500' : 'bg-gray-300'
+              }`}
+              onClick={() => emblaApi && emblaApi.scrollTo(index)}
+            />
+          ))}
         </div>
       </motion.div>
     </div>
