@@ -42,6 +42,19 @@ const Index = () => {
     setShowSummary(true);
   };
 
+  const renderProgressBar = () => {
+    if (!isMobile || showSummary) return null;
+    const progress = ((currentStep + 1) / 7) * 100; // 7 steps total (0-6)
+    return (
+      <div className="fixed top-0 left-0 right-0 h-1 bg-gray-200 z-50">
+        <div
+          className="h-full bg-blue-500 transition-all duration-300 ease-in-out"
+          style={{ width: `${progress}%` }}
+        ></div>
+      </div>
+    );
+  };
+
   const handleShare = () => {
     if (navigator.share) {
       navigator.share({
@@ -94,6 +107,7 @@ const Index = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-blue-50 to-purple-50">
+      {renderProgressBar()}
       <header className="bg-white shadow p-4 flex justify-between items-center">
         <h1 className="text-2xl md:text-3xl font-bold text-blue-800">Community Retention Survey</h1>
         {surveyData.communityName && !isMobile && (
