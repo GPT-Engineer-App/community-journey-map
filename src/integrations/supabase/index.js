@@ -19,53 +19,53 @@ const fromSupabase = async (query) => {
 
 /* supabase integration types
 
-// EXAMPLE TYPES SECTION
-// DO NOT USE TYPESCRIPT
+### RetentionAudit24
 
-### foos
+| name       | type        | format | required |
+|------------|-------------|--------|----------|
+| id         | int8        | number | true     |
+| created_at | timestamptz | string | true     |
+| Q1         | text        | string | false    |
 
-| name    | type | format | required |
-|---------|------|--------|----------|
-| id      | int8 | number | true     |
-| title   | text | string | true     |
-| date    | date | string | true     |
-
-### bars
-
-| name    | type | format | required |
-|---------|------|--------|----------|
-| id      | int8 | number | true     |
-| foo_id  | int8 | number | true     |  // foreign key to foos
-	
 */
 
-// Example hook for models
+export const useRetentionAudit24 = () => useQuery({
+    queryKey: ['RetentionAudit24'],
+    queryFn: () => fromSupabase(supabase.from('RetentionAudit24').select('*')),
+});
 
-export const useFoo = ()=> useQuery({
-    queryKey: ['foos'],
-    queryFn: fromSupabase(supabase.from('foos')),
-})
-export const useAddFoo = () => {
+export const useAddRetentionAudit24 = () => {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: (newFoo)=> fromSupabase(supabase.from('foos').insert([{ title: newFoo.title }])),
-        onSuccess: ()=> {
-            queryClient.invalidateQueries('foos');
+        mutationFn: (newAudit) => fromSupabase(supabase.from('RetentionAudit24').insert([newAudit])),
+        onSuccess: () => {
+            queryClient.invalidateQueries('RetentionAudit24');
         },
     });
 };
 
-export const useBar = ()=> useQuery({
-    queryKey: ['bars'],
-    queryFn: fromSupabase(supabase.from('bars')),
-})
-export const useAddBar = () => {
+export const useUpdateRetentionAudit24 = () => {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: (newBar)=> fromSupabase(supabase.from('bars').insert([{ foo_id: newBar.foo_id }])),
-        onSuccess: ()=> {
-            queryClient.invalidateQueries('bars');
+        mutationFn: ({ id, ...updateData }) => fromSupabase(supabase.from('RetentionAudit24').update(updateData).eq('id', id)),
+        onSuccess: () => {
+            queryClient.invalidateQueries('RetentionAudit24');
         },
     });
 };
 
+export const useDeleteRetentionAudit24 = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (id) => fromSupabase(supabase.from('RetentionAudit24').delete().eq('id', id)),
+        onSuccess: () => {
+            queryClient.invalidateQueries('RetentionAudit24');
+        },
+    });
+};
+
+export const useGetSingleRetentionAudit24 = (id) => useQuery({
+    queryKey: ['RetentionAudit24', id],
+    queryFn: () => fromSupabase(supabase.from('RetentionAudit24').select('*').eq('id', id).single()),
+    enabled: !!id,
+});
